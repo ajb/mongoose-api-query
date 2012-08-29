@@ -1,4 +1,3 @@
-var fs = require('fs');
 var Monster = require('./model');
 var mongooseApiQuery = require('./lib/mongoose-api-query');
 
