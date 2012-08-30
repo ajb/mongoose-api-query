@@ -20,14 +20,6 @@ describe('mongoose-api-query', function(){
     });
   });
 
-  it('can have custom query params', function(done){
-    browser.visit("http://localhost:3000/test1?zamboni=uh-huh", function () {
-      hasMonster("Big Purple People Eater")
-      hasMonsterCount(1);
-      done();
-    });
-  });
-
   it('ignores unmatched params', function(done){
     browser.visit("http://localhost:3000/test1?coffee=black", function () {
       hasMonsterCount(6);
@@ -35,6 +27,38 @@ describe('mongoose-api-query', function(){
     });
   });
 
+  it('works with {near} and no stated radius', function(done){
+    browser.visit("http://localhost:3000/test1?loc={near}38.8977,-77.0366", function () {
+      hasMonsterCount(6);
+      done();
+    });
+  });
+
+  it('returns correct result for {near} within 1 mile radius', function(done){
+    browser.visit("http://localhost:3000/test1?loc={near}38.8977,-77.0366&radius=1", function () {
+      hasMonsterCount(1);
+      hasMonster("Big Purple People Eater");
+      done();
+    });
+  });
+
+ it('handles paging of results', function(done){
+    browser.visit("http://localhost:3000/test1?page=2&perPage=4", function () {
+      hasMonsterCount(2);
+      done();
+    });
+  });
+
+  it('returns correct result for {near} within 3 mile radius', function(done){
+    browser.visit("http://localhost:3000/test1?loc={near}38.8977,-77.0366&radius=3", function () {
+      hasMonsterCount(4);
+      hasMonster("Big Purple People Eater");
+      hasMonster("Biggie Smalls");
+      hasMonster("Frankenstein");
+      hasMonster("Biggie Smalls the 2nd");
+      done();
+    });
+  });
 
   describe('SchemaString', function(){
     it('filters without case-sensitivity', function(done){
