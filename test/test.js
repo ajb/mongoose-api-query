@@ -4,12 +4,12 @@ var expect = require("expect.js")
 
 var hasMonster = function (name) {
   expect(browser.response[2]).to.contain('"' + name + '"');
-}
+};
 
 var hasMonsterCount = function (num) {
   var json = JSON.parse(browser.response[2]);
   expect(json.length).to.equal(num);
-}
+};
 
 describe('mongoose-api-query', function(){
 
@@ -30,6 +30,20 @@ describe('mongoose-api-query', function(){
   it('works with {near} and no stated radius', function(done){
     browser.visit("http://localhost:3000/test1?loc={near}38.8977,-77.0366", function () {
       hasMonsterCount(6);
+      done();
+    });
+  });
+
+  it('excludes results that match {ne} param for Numbers', function(done){
+    browser.visit("http://localhost:3000/test1?monster_identification_no={ne}200", function () {
+      hasMonsterCount(4);
+      done();
+    });
+  });
+
+  it('excludes results that match {ne} param for Strings, case insensitive', function(done){
+    browser.visit("http://localhost:3000/test1?name={ne}biggie", function () {
+      hasMonsterCount(4);
       done();
     });
   });
@@ -135,6 +149,39 @@ describe('mongoose-api-query', function(){
         hasMonster("Big Purple People Eater");
         hasMonster("Frankenstein");
         hasMonsterCount(2);
+        done();
+      });
+    });
+
+    it('excludes results matching values specified in {nin} for Numbers', function(done){
+      browser.visit("http://localhost:3000/test1?monster_identification_no={nin}1,301", function (){
+        hasMonster("Biggie Smalls");
+        hasMonster("Biggie Smalls the 2nd");
+        hasMonster("Bessie the Lochness Monster");
+        hasMonster("Clay Johnson");
+        hasMonsterCount(4);
+        done();
+      });
+    });
+
+    it('excludes results matching values specified in {nin} for Strings, case insensitive', function(done){
+      browser.visit("http://localhost:3000/test1?name={nin}Purple,Enstein", function (){
+        hasMonster("Biggie Smalls");
+        hasMonster("Biggie Smalls the 2nd");
+        hasMonster("Bessie the Lochness Monster");
+        hasMonster("Clay Johnson");
+        hasMonsterCount(4);
+        done();
+      });
+    });
+
+    it('excludes results matching values specified in {nin} for subdocuments', function(done){
+      browser.visit("http://localhost:3000/test1?foods.name={nin}kale,beets", function (){
+        hasMonster("Biggie Smalls");
+        hasMonster("Biggie Smalls the 2nd");
+        hasMonster("Bessie the Lochness Monster");
+        hasMonster("Clay Johnson");
+        hasMonsterCount(4);
         done();
       });
     });
@@ -268,6 +315,6 @@ describe('mongoose-api-query', function(){
     });
 
 
-  });
+ });
 
 });

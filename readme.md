@@ -5,7 +5,9 @@ If you use Mongoose to help serve results for API calls, you might be used to ha
 
 mongoose-api-query handles some of that busywork for you. Pass in a vanilla object (e.g. req.query) and Query conditions will be cast to their appropriate types according to your Mongoose schema; e.g. eats_humans=true to a Boolean.
 
-Supports nested properties like `friends.name=` and operators including `{gt}` `{gte}` `{lt}` `{lte}` `{all}` and `{near}`
+Supports nested properties like `friends.name=` and operators including `{gt}` `{gte}` `{lt}` `{lte}` `{ne}` `{nin}` `{all}` and `{near}`
+
+All fields of type `String` are searched on in a case-insensitive manner (which is not the default for MongoDB).
 
 ## Usage
 
@@ -38,6 +40,13 @@ Comma-separated values assumes `{any}`:
 Match only if all are true:
 
     /monsters?foods.name={all}kale,beets
+
+Show everything except this match (loose regex, will match Frankenstein):
+    /monsters?name={ne}frank
+
+Show everything except any of these matches:
+
+    /monsters?foods.name={nin}kale,beets
 
 Numeric operators:
 
