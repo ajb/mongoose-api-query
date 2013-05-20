@@ -3,16 +3,16 @@ var expect = require("expect.js")
   , browser = new Browser();
 
 var hasMonster = function (name) {
-  expect(browser.response[2]).to.contain('"' + name + '"');
+  expect(browser.text()).to.contain('"' + name + '"');
 };
 
 var hasMonsterCount = function (num) {
-  var json = JSON.parse(browser.response[2]);
+  var json = JSON.parse(browser.text());
   expect(json.length).to.equal(num);
 };
 
 var hasMonstersInOrder = function (monster1, monster2) {
-  var json = browser.response[2];
+  var json = browser.text();
   var index1 = json.indexOf(monster1);
   var index2 = json.indexOf(monster2);
   expect(index1).to.not.equal(-1);
