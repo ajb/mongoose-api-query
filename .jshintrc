@@ -1,0 +1,10 @@
+/**!
+ * See http://www.jshint.com/docs/options/ for all available options.
+ */
+{
+    "maxparams": 5,
+    "maxdepth": 5,
+    "maxstatements": 25,
+    "maxcomplexity": 7,
+    "node": true
+}
